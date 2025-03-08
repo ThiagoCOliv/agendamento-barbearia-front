@@ -1,0 +1,36 @@
+<form #form="ngForm" (submit)="onSubmit()">
+    <div class="linha-inputs">
+        <div class="campo-form">
+            <label for="name">Nome:</label>
+            <input type="text" name="name" id="name" #nameModel="ngModel" [(ngModel)]="client.name" required>
+
+            @if (nameModel.hasError('required')) 
+            {
+                <div class="mensagem-erro">Informe o nome do cliente</div>
+            }
+        </div>
+    </div>
+    <div class="linha-inputs">
+        <div class="campo-form">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" #emailModel="ngModel" [(ngModel)]="client.email" required email>
+
+            @if (nameModel.hasError('required') || nameModel.hasError('email')) 
+            {
+                <div class="mensagem-erro">Informe um email válido</div>
+            }
+        </div>
+        <div class="campo-form">
+            <label for="phone">Celular:</label>
+            <input type="tel" name="phone" id="phone" #phoneModel="ngModel" [(ngModel)]="client.phone" required mask="(00) 00000-0000">
+
+            @if (nameModel.hasError('required') || nameModel.hasError('mask')) 
+            {
+                <div class="mensagem-erro">Informe um número de telefone válido</div>
+            }
+        </div>
+    </div>
+    <div class="linha-inputs">
+        <button type="submit" [disabled]="form.invalid">Salvar</button>
+    </div>
+</form>
