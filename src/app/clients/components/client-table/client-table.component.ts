@@ -4,6 +4,7 @@ import { SERVICES } from '../../../services/service.token';
 import { IDialogManagerService } from '../../../services/idialog-manager.service';
 import { DialogManagerService } from '../../../services/dialog-manager.service';
 import { Subscription } from 'rxjs';
+import { YesNoDialogComponent } from '../../../commons/components/yes-no-dialog/yes-no-dialog.component';
 
 @Component({
   selector: 'app-client-table',
@@ -48,12 +49,20 @@ export class ClientTableComponent implements AfterViewInit, OnChanges, OnDestroy
 
   update(client: ClientModelTable) 
   {
-    throw new Error('Method not implemented.');
+    this.requestUpdate.emit(client);
   }
   
   delete(client: ClientModelTable) 
   {
-    throw new Error('Method not implemented.');
+    this.dialogManagerService
+      .showYesNoDialog(YesNoDialogComponent, { title: 'Excluir cliente', content: `Tem certeza que deseja excluir o cliente ${ client.name }` })
+      .subscribe(res => {
+        if(res)
+        {
+          this.confirmDelete.emit(client);
+          this.clients = this.clients.filter(cli => cli.id !== client.id);
+        }
+      });
   }
   
   formatPhone(phone: string) 

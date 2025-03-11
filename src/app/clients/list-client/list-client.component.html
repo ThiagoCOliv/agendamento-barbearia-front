@@ -1,1 +1,7 @@
-<p>list-client works!</p>
+<div class="container">
+    <div class="row">
+        <div>
+            <app-client-table (confirmDelete)="delete($event)" (requestUpdate)="update($event)" [clients]="clients"></app-client-table>
+        </div>
+    </div>
+</div>
