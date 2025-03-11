@@ -1,1 +1,20 @@
-<p>client-table works!</p>
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Celular</th>
+        <th>Ações</th>
+    </tr>
+    @for(client of clients; track $index)
+    {
+        <tr>
+            <td>{{ client.name }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ formatPhone(client.phone) }}</td>
+            <td>
+                <button class="delete-btn" (click)="delete(client)">Excluir</button>
+                <button class="update-btn" (click)="update(client)">Atualizar</button>
+            </td>
+        </tr>
+    }
+</table>
