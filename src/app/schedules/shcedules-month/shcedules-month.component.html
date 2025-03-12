@@ -1,0 +1,8 @@
+<app-schedule-calendar 
+    [monthSchedule]="monthSchedule" 
+    (dateChange)="onDateChange($event)" 
+    (confirmDelete)="onConfirmDelete($event)" 
+    (scheduleClient)="onScheduleClient($event)"
+    [clients]="clients"
+>
+</app-schedule-calendar>

@@ -1,0 +1,75 @@
+<div class="container">
+    <div class="row">
+        <div>
+            <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="container">
+                <div class="linha-inputs">
+                    <div class="campo-form">
+                        <label for="startAt">Inicio:</label>
+                        <input type="time" name="startAt" id="startAt" #startAtModel="ngModel" 
+                            (ngModelChange)="onTimeChange($event)" [(ngModel)]="newSchedule.startAt" required>
+            
+                        @if (startAtModel.hasError('required')) 
+                        {
+                            <div class="mensagem-erro">Informe a hora de inicio</div>
+                        }
+                    </div>
+                </div>
+                <div class="linha-inputs">
+                    <div class="campo-form">
+                        <label for="endAt">Término:</label>
+                        <input type="time" name="endAt" id="endAt" #endAtModel="ngModel" 
+                            (ngModelChange)="onTimeChange($event)" [(ngModel)]="newSchedule.endAt" disabled="true">
+            
+                        @if (endAtModel.hasError('required')) 
+                        {
+                            <div class="mensagem-erro">Informe a hora final</div>
+                        }
+                    </div>
+                </div>
+                <div class="linha-inputs">
+                    <div class="campo-form">
+                        <label for="endAt">Selecione o cliente:</label>
+                        <select name="clientId" id="clientId" #clientIdModel="ngModel" [(ngModel)]="newSchedule.clientId" required>
+                            @for (client of clients; track client.id) 
+                            {
+                                <option [value]="client.id">{{ client.name }}</option>
+                            }
+                        </select>
+            
+                        @if (clientIdModel.hasError('required')) 
+                        {
+                            <div class="mensagem-erro">Informe o cliente</div>
+                        }
+                    </div>
+                    <button type="submit" [disabled]="form.invalid">+</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <div class="calendar-card">
+                <!-- Colocar calendario -->
+            </div>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <th>Inicio</th>
+                    <th>Fim</th>
+                    <th>Cliente</th>
+                    <th>Ações</th>
+                </tr>
+                @for (schedule of schedules; track $index) 
+                {
+                    <tr>
+                        <td>{{ schedule.startAt }}</td>
+                        <td>{{ schedule.endAt }}</td>
+                        <td>{{ schedule.clientName }}</td>
+                        <td><button (click)="requestDelete(schedule)">Excluir</button></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
