@@ -1,0 +1,82 @@
+.container{
+    width: 100vw;
+    padding: 1rem;
+
+    .row, .sub-title{
+        width: 70%;
+        margin: auto;
+        padding: 0 1rem;
+    }
+
+    .sub-title{
+        margin-block: 16px 8px;
+
+        h2{
+            text-decoration: underline;
+        }
+    }
+
+    .row{
+        display: flex;
+        gap: 16px;
+        
+        form{
+            width: 100%;
+            .linha-inputs{
+                display: flex;
+                width: 100%;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 16px;
+
+                .campo-form{
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+
+                    input, select{
+                        width: 100%;
+                        height: 32px;
+                        padding-left: 16px;
+                    }
+
+                    .mensagem-erro{
+                        background: #df0312;
+                        color: #dfdfdf;
+                        padding: 0 8px;
+                    }
+                }
+
+                button{
+                    padding: 8px 16px;
+                    border-radius: 5px;
+                    border: 0;
+                    background: var(--main-color);
+                    color: #121212;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .calendar-card input{
+            width: 100%;
+            padding: 8px;
+        }
+
+        table{
+            background: var(--main-color);
+            overflow: hidden;
+            border: 1px solid var(--main-color);
+            width: 100%;
+
+            tr td, tr th{
+                padding: 16px;
+            }
+
+            tr td.table-content{
+                background: #dfdfdf;
+            }
+        }
+    }
+}

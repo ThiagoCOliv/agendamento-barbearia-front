@@ -14,5 +14,6 @@ export class DialogManagerService implements IDialogManagerService
   showYesNoDialog(component: ComponentType<YesNoDialogComponent>, data: { title: string; content: string; }): Observable<any> 
   {
     //TO DO: pensar como fazer isso sem utilizar material
+    return new Observable<any>;
   }
 }

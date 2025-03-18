@@ -1,75 +1,72 @@
 <div class="container">
     <div class="row">
-        <div>
-            <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="container">
-                <div class="linha-inputs">
-                    <div class="campo-form">
-                        <label for="startAt">Inicio:</label>
-                        <input type="time" name="startAt" id="startAt" #startAtModel="ngModel" 
-                            (ngModelChange)="onTimeChange($event)" [(ngModel)]="newSchedule.startAt" required>
-            
-                        @if (startAtModel.hasError('required')) 
-                        {
-                            <div class="mensagem-erro">Informe a hora de inicio</div>
-                        }
-                    </div>
+        <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+            <div class="linha-inputs">
+                <div class="campo-form">
+                    <label for="startAt">Inicio:</label>
+                    <input type="datetime-local" name="startAt" id="startAt" #startAtModel="ngModel" 
+                        (ngModelChange)="onTimeChange($event)" [(ngModel)]="newSchedule.startAt" required>
+        
+                    @if (startAtModel.hasError('required'))
+                    {
+                        <div class="mensagem-erro">Informe a hora de inicio</div>
+                    }
                 </div>
-                <div class="linha-inputs">
-                    <div class="campo-form">
-                        <label for="endAt">Término:</label>
-                        <input type="time" name="endAt" id="endAt" #endAtModel="ngModel" 
-                            (ngModelChange)="onTimeChange($event)" [(ngModel)]="newSchedule.endAt" disabled="true">
-            
-                        @if (endAtModel.hasError('required')) 
-                        {
-                            <div class="mensagem-erro">Informe a hora final</div>
-                        }
-                    </div>
+                <div class="campo-form">
+                    <label for="endAt">Término:</label>
+                    <input type="datetime-local" name="endAt" id="endAt" #endAtModel="ngModel" 
+                        (ngModelChange)="onTimeChange($event)" (ngModel)="newSchedule.endAt" [ngModel]="endAtShow" disabled="true">
+        
+                    @if (endAtModel.hasError('required')) 
+                    {
+                        <div class="mensagem-erro">Informe a hora final</div>
+                    }
                 </div>
-                <div class="linha-inputs">
-                    <div class="campo-form">
-                        <label for="endAt">Selecione o cliente:</label>
-                        <select name="clientId" id="clientId" #clientIdModel="ngModel" [(ngModel)]="newSchedule.clientId" required>
-                            @for (client of clients; track client.id) 
-                            {
-                                <option [value]="client.id">{{ client.name }}</option>
-                            }
-                        </select>
-            
-                        @if (clientIdModel.hasError('required')) 
+                <div class="campo-form">
+                    <label for="endAt">Selecione o cliente:</label>
+                    <select name="clientId" id="clientId" #clientIdModel="ngModel" [(ngModel)]="newSchedule.clientId" required>
+                        @for (client of clients; track client.id) 
                         {
-                            <div class="mensagem-erro">Informe o cliente</div>
+                            <option [value]="client.id">{{ client.name }}</option>
                         }
-                    </div>
-                    <button type="submit" [disabled]="form.invalid">+</button>
+                    </select>
+        
+                    @if (clientIdModel.hasError('required')) 
+                    {
+                        <div class="mensagem-erro">Informe o cliente</div>
+                    }
                 </div>
-            </form>
-        </div>
+                <button type="submit" [disabled]="form.invalid">+</button>
+            </div>
+        </form>
+    </div>
+    <div class="sub-title">
+        <h2>Agendamentos marcados</h2>
     </div>
     <div class="row">
-        <div>
-            <div class="calendar-card">
-                <!-- Colocar calendario -->
-            </div>
+        <div class="calendar-card">
+            <label for="date-search">Selecione a data que deseja visualizar</label>
+            <input type="datetime-local" name="date-search" id="date-search" [(ngModel)]="selected">
         </div>
-        <div>
-            <table>
+        <table>
+            <tr>
+                <th>Inicio</th>
+                <th>Fim</th>
+                <th>Cliente</th>
+                <th>Ações</th>
+            </tr>
+            @for (schedule of schedules; track $index) 
+            {
                 <tr>
-                    <th>Inicio</th>
-                    <th>Fim</th>
-                    <th>Cliente</th>
-                    <th>Ações</th>
+                    <td class="table-content">{{ schedule.startAt }}</td>
+                    <td class="table-content">{{ schedule.endAt }}</td>
+                    <td class="table-content">{{ schedule.clientName }}</td>
+                    <td class="table-content"><button (click)="requestDelete(schedule)">Excluir</button></td>
                 </tr>
-                @for (schedule of schedules; track $index) 
-                {
-                    <tr>
-                        <td>{{ schedule.startAt }}</td>
-                        <td>{{ schedule.endAt }}</td>
-                        <td>{{ schedule.clientName }}</td>
-                        <td><button (click)="requestDelete(schedule)">Excluir</button></td>
-                    </tr>
-                }
-            </table>
-        </div>
+            }
+            @empty {
+                <tr><td class="table-content" colspan="4">Nenhum agendamento encontrado nesta data</td></tr>
+            }
+        </table>
     </div>
 </div>

@@ -3,14 +3,14 @@ import { SERVICES } from '../../../services/service.token';
 import { DialogManagerService } from '../../../services/dialog-manager.service';
 import { ClientScheduleAppointmentModel, SaveScheduleModel, ScheduleAppointmentMonthModel, SelectClientModel } from '../../schedule.model';
 import { IDialogManagerService } from '../../../services/idialog-manager.service';
-import { FormControl, NgForm } from '@angular/forms';
+import { FormControl, FormsModule, NgForm } from '@angular/forms';
 import { YesNoDialogComponent } from '../../../commons/components/yes-no-dialog/yes-no-dialog.component';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-schedule-calendar',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './schedule-calendar.component.html',
   styleUrl: './schedule-calendar.component.scss',
   providers: [ { provide: SERVICES.YES_NO_DIALOG, useClass: DialogManagerService } ]
@@ -25,6 +25,7 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
 
   schedules!: ClientScheduleAppointmentModel[];
   newSchedule: SaveScheduleModel = this.inicialSchedule;
+  endAtShow!: String;
   addingSchedule: boolean = false;
   clientSelectFormControl = new FormControl();
 
@@ -44,18 +45,19 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
 
   set selected(selected: Date)
   {
-    if(this._selected.getTime() !== selected.getTime())
+    const selection = new Date(selected);
+    if(this._selected.getTime() !== selection.getTime())
     {
-      this.dateChange.emit(selected);
+      this.dateChange.emit(selection);
       this.buildTable();
-      this._selected = selected;
+      this._selected = selection;
     }
 
   }
   
   ngAfterViewInit(): void 
   {
-    throw new Error('Method not implemented.');
+    //throw new Error('Method not implemented.');
   }
   
   ngOnChanges(changes: SimpleChanges): void 
@@ -77,8 +79,10 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
   private buildTable()
   {
     const appointments = this.monthSchedule.scheduledAppointments.filter(a => {
-      this.monthSchedule.year === this._selected.getFullYear() && this.monthSchedule.month === this._selected.getMonth() && a.day === this._selected.getDate()
-    })
+      this.monthSchedule.year === this._selected.getFullYear() && this.monthSchedule.month === this._selected.getMonth() + 1 && a.day === this._selected.getDate()
+    });
+
+    console.log(appointments)
 
     this.schedules = appointments;
   }
@@ -97,8 +101,11 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
   onTimeChange(time: Date)
   {
     const endAt = new Date(time);
-    endAt.setHours(time.getHours() + 1);
+    endAt.setHours(endAt.getHours() + 1);
     this.newSchedule.endAt = endAt;
+    const endAtMonth = endAt.getMonth() < 9 ? `0${endAt.getMonth() + 1}` : endAt.getMonth() + 1;
+    const endAtDay = endAt.getDate() < 9 ? `0${endAt.getDate()}` : endAt.getDate();
+    this.endAtShow = `${endAt.getFullYear()}-${endAtMonth}-${endAtDay}T${endAt.getHours()}:${endAt.getMinutes()}`;
   }
 
   onSubmit(form: NgForm)
