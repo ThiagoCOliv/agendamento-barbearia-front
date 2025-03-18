@@ -1,0 +1,24 @@
+.dialog{
+    margin: auto;
+    padding: 16px;
+    background: var(--main-color);
+    width: 50%;
+
+    .dialog-buttons{
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+
+        button{
+            padding: 8px 16px;
+            background: #dfdfdf;
+            border: 0;
+            transition: .4s ease;
+
+            &:hover{
+                background: #0006;
+                color: #dfdfdf;
+            }
+        }
+    }
+}

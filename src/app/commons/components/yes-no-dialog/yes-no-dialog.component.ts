@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { SERVICES } from '../../../services/service.token';
 
 @Component({
@@ -11,5 +11,18 @@ import { SERVICES } from '../../../services/service.token';
 
 export class YesNoDialogComponent 
 {
-  constructor(@Inject(SERVICES.YES_NO_DIALOG) public readonly data: any){}
+  @Output() onClose = new EventEmitter<boolean>();
+
+  title: String = '';
+  content: String = '';
+
+  confirm(): void 
+  {
+    this.onClose.emit(true);
+  }
+
+  cancel(): void 
+  {
+    this.onClose.emit(false);
+  }
 }

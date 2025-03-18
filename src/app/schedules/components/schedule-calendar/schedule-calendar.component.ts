@@ -24,6 +24,7 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
   private readonly inicialSchedule: SaveScheduleModel = { startAt: undefined, endAt: undefined, clientId: undefined };
 
   schedules!: ClientScheduleAppointmentModel[];
+  schedulesShow!: any[];
   newSchedule: SaveScheduleModel = this.inicialSchedule;
   endAtShow!: String;
   addingSchedule: boolean = false;
@@ -38,9 +39,9 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
 
   constructor(@Inject(SERVICES.YES_NO_DIALOG) private readonly dialogManagerService: IDialogManagerService){}
 
-  get selected(): Date
+  get selected(): String
   {
-    return this._selected;
+    return this.convertDateTimeToString(this._selected);
   }
 
   set selected(selected: Date)
@@ -78,22 +79,43 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
 
   private buildTable()
   {
-    const appointments = this.monthSchedule.scheduledAppointments.filter(a => {
-      this.monthSchedule.year === this._selected.getFullYear() && this.monthSchedule.month === this._selected.getMonth() + 1 && a.day === this._selected.getDate()
+    const appointments = this.monthSchedule.scheduledAppointments;
+
+    this.schedules = appointments.filter(a => {
+        return this.monthSchedule.year === this._selected.getFullYear() && 
+              this.monthSchedule.month === this._selected.getMonth() + 1 && a.day == this._selected.getDate()
     });
 
-    console.log(appointments)
+    this.updateTableView();
+  }
 
-    this.schedules = appointments;
+  updateTableView()
+  {
+    this.schedulesShow = this.schedules.map(sch => {
+      const start = new Date(sch.startAt);
+      const end = new Date(sch.endAt);
+
+      return {
+        startAt: `${start.getDate()}/${start.getMonth() + 1}/${start.getFullYear()} - ${start.getHours()}:${start.getMinutes()}`,
+        endAt: `${end.getDate()}/${end.getMonth() + 1}/${end.getFullYear()} - ${end.getHours()}:${end.getMinutes()}`,
+        clientName: sch.clientName,
+        clientId: sch.clientId,
+        id: sch.id,
+        day: sch.day
+      };
+    })
   }
 
   requestDelete(schedule: ClientScheduleAppointmentModel)
   {
-    this.dialogManagerServiceSubscription = this.dialogManagerService.showYesNoDialog(YesNoDialogComponent, { title: 'Excluir', content: 'Confirmar exclusão do agendamento?' }).subscribe(res => {
+    const correctSchedule = this.schedules.find(sch => sch.id == schedule.id);
+      
+    this.dialogManagerServiceSubscription = this.dialogManagerService.showYesNoDialog({ title: 'Excluir', content: 'Confirmar exclusão do agendamento?' }).subscribe(res => {
       if(res)
       {
-        this.confirmDelete.emit(schedule);
+        this.confirmDelete.emit(correctSchedule);
         this.schedules = this.schedules.filter(sch => sch.id !== schedule.id);
+        this.updateTableView();
       }
     });
   }
@@ -103,17 +125,25 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
     const endAt = new Date(time);
     endAt.setHours(endAt.getHours() + 1);
     this.newSchedule.endAt = endAt;
-    const endAtMonth = endAt.getMonth() < 9 ? `0${endAt.getMonth() + 1}` : endAt.getMonth() + 1;
-    const endAtDay = endAt.getDate() < 9 ? `0${endAt.getDate()}` : endAt.getDate();
-    this.endAtShow = `${endAt.getFullYear()}-${endAtMonth}-${endAtDay}T${endAt.getHours()}:${endAt.getMinutes()}`;
+    this.endAtShow = this.convertDateTimeToString(endAt);
+  }
+
+  convertDateTimeToString(datetime: Date): String
+  {
+    const month = datetime.getMonth() < 9 ? `0${datetime.getMonth() + 1}` : datetime.getMonth() + 1;
+    const day = datetime.getDate() < 9 ? `0${datetime.getDate()}` : datetime.getDate();
+    return `${datetime.getFullYear()}-${month}-${day}T${datetime.getHours()}:${datetime.getMinutes()}`;
   }
 
   onSubmit(form: NgForm)
   {
     const startAt = new Date(this._selected);
     const endAt = new Date(this._selected);
-    startAt.setHours(this.newSchedule.startAt!.getHours(), this.newSchedule.startAt!.getMinutes());
-    endAt.setHours(this.newSchedule.endAt!.getHours(), this.newSchedule.endAt!.getMinutes());
+    const startAtTime = new Date(this.newSchedule.startAt!);
+    const endAtTime = new Date(this.newSchedule.endAt!);
+
+    startAt.setHours(startAtTime.getHours(), startAtTime.getMinutes());
+    endAt.setHours(endAtTime.getHours(), endAtTime.getMinutes());
 
     const saved: ClientScheduleAppointmentModel = {
       id:-1,
@@ -121,7 +151,7 @@ export class ScheduleCalendarComponent implements AfterViewInit, OnChanges, OnDe
       startAt,
       endAt,
       clientId: this.newSchedule.clientId!,
-      clientName: this.clients.find(cli => cli.id === this.newSchedule.clientId!)!.name
+      clientName: this.clients.find(cli => cli.id == this.newSchedule.clientId!)!.name
     }
 
     this.monthSchedule.scheduledAppointments.push(saved);

@@ -55,7 +55,7 @@ export class ClientTableComponent implements AfterViewInit, OnChanges, OnDestroy
   delete(client: ClientModelTable) 
   {
     this.dialogManagerService
-      .showYesNoDialog(YesNoDialogComponent, { title: 'Excluir cliente', content: `Tem certeza que deseja excluir o cliente ${ client.name }` })
+      .showYesNoDialog({ title: 'Excluir cliente', content: `Tem certeza que deseja excluir o cliente ${ client.name }` })
       .subscribe(res => {
         if(res)
         {

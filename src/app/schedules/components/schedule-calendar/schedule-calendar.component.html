@@ -55,7 +55,7 @@
                 <th>Cliente</th>
                 <th>Ações</th>
             </tr>
-            @for (schedule of schedules; track $index) 
+            @for (schedule of schedulesShow; track schedule.clientId)
             {
                 <tr>
                     <td class="table-content">{{ schedule.startAt }}</td>
