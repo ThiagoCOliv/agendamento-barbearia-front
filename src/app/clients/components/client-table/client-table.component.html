@@ -11,7 +11,7 @@
             <td>{{ client.name }}</td>
             <td>{{ client.email }}</td>
             <td>{{ formatPhone(client.phone) }}</td>
-            <td>
+            <td class="buttons">
                 <button class="delete-btn" (click)="delete(client)">Excluir</button>
                 <button class="update-btn" (click)="update(client)">Atualizar</button>
             </td>

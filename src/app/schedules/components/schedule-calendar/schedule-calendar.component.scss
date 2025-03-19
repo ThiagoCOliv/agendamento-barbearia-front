@@ -41,8 +41,8 @@
                     }
 
                     .mensagem-erro{
-                        background: #df0312;
-                        color: #dfdfdf;
+                        background: var(--red-color);
+                        color: var(--light-color);
                         padding: 0 8px;
                     }
                 }
@@ -52,7 +52,7 @@
                     border-radius: 5px;
                     border: 0;
                     background: var(--main-color);
-                    color: #121212;
+                    color: var(--dark-color);
                     font-weight: bold;
                     cursor: pointer;
                 }
@@ -75,12 +75,12 @@
             }
 
             tr td.table-content{
-                background: #dfdfdf;
+                background: var(--light-color);
 
                 button{
                     border: 0;
-                    background: #df0312;
-                    color: #dfdfdf;
+                    background: var(--red-color);
+                    color: var(--light-color);
                     padding: 8px 16px;
                     font-weight: bold;
                 }
